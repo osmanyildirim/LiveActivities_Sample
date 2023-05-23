@@ -1,0 +1,64 @@
+name: LiveActivities_Sample
+
+options:
+  bundleIdPrefix: com.osmanyildirim
+  xcodeVersion: 14.3
+
+settings:
+  base:
+    CODE_SIGN_STYLE: Manual
+    SWIFT_VERSION: 5.0
+
+targets:
+  LiveActivities_Sample:
+    type: application
+    sources: 
+      [
+        AppSources,
+        Shared/ActivityManager.swift,
+        Shared/LiveActivityAttributes.swift
+      ]
+    platform: iOS
+    deploymentTarget: 16.1
+    dependencies:
+      - target: LiveActivities_WidgetExtension
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: 1
+        PRODUCT_BUNDLE_IDENTIFIER: com.osmanyildirim.LiveActivities-Sample
+        CODE_SIGN_ENTITLEMENTS: AppSources/Supporting/LiveActivities_Sample.entitlements
+    attributes:
+      SystemCapabilities:
+        com.apple.Push:
+          enabled: 1
+    postbuildScripts:
+      - path: Scripts/Swiftlint.sh
+        name: Swiftlint
+  LiveActivities_WidgetExtension:
+    type: app-extension
+    name: LiveActivities_WidgetExtension
+    sources:
+      [
+        WidgetSources,
+        Shared/ActivityManager.swift,
+        Shared/LiveActivityAttributes.swift,
+        AppSources/Assets/Assets.xcassets,
+        AppSources/Assets/Colors.xcassets,
+        AppSources/Model/OrderStatus.swift
+      ]
+    platform: iOS
+    deploymentTarget: 16.1
+    dependencies:
+      - sdk: SwiftUI.framework
+      - sdk: ActivityKit.framework
+      - sdk: WidgetKit.framework
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: 1
+        PRODUCT_BUNDLE_IDENTIFIER: com.osmanyildirim.LiveActivities-Sample.Widgets
+        INFOPLIST_FILE: WidgetSources/Supporting/Info.plist
+        CODE_SIGN_ENTITLEMENTS: WidgetSources/Supporting/LiveActivities_WidgetExtension.entitlements
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    postbuildScripts:
+      - path: Scripts/Swiftlint.sh
+        name: Swiftlint
